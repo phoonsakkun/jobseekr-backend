@@ -1,3 +1,4 @@
-const { sequelize } = require("../models");
+// const { sequelize } = require("../models");
+const { WorkExperience } = require("../models");
 
-sequelize.sync({ force: true });
+WorkExperience.sync({ force: true });

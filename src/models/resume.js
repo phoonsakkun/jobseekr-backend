@@ -4,17 +4,28 @@ module.exports = (sequelize, DataTypes) => {
     {
       resumeName: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       resumeFile: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       addToProfile: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
       },
     },
     {
       underscored: true,
     }
   );
+  Resume.associate = (models) => {
+    Resume.belongsTo(models.User, {
+      foreignKey: {
+        name: "userId",
+      },
+      onDelete: "RESTRICT",
+    });
+  };
   return Resume;
 };
