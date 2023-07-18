@@ -6,11 +6,13 @@ const cors = require("cors");
 const jobRoute = require("./routes/jobRoute");
 const searchRoute = require("./routes/searchRoute");
 const userRoute = require("./routes/userRoute");
+const adminRoute = require("./routes/adminRoute");
 const morgan = require("morgan");
 const authenticateMiddleware = require("./middlewares/authenticate");
 const notFoundMiddleware = require("./middlewares/notFound");
 const errorMiddleware = require("./middlewares/error");
 const helmet = require("helmet");
+const adminAuthenticate = require("./middlewares/adminAuthenticate");
 
 const app = express();
 app.use(cors());
@@ -32,6 +34,7 @@ app.use(express.json());
 
 // app.use("/", guestRoute);
 app.use("/auth", authRoute);
+app.use("/admin", adminRoute);
 app.use("/users", authenticateMiddleware, userRoute);
 app.use("/jobs", jobRoute);
 app.use("/search", searchRoute);

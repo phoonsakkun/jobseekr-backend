@@ -1,6 +1,7 @@
 // exports.getAllJobs = async (req, res, next) => {};
-
-const { JobPost, Employer } = require("../models");
+const { Op } = require("sequelize");
+const { where } = require("sequelize");
+const { JobPost, Employer, JobType, Hiringtype, Region } = require("../models");
 
 exports.createJob = async (req, res, next) => {
   try {
@@ -47,13 +48,47 @@ exports.createJob = async (req, res, next) => {
   }
 };
 
+exports.getSearchJob = (req, res, next) => {
+  const { location, textinput, jobtype } = req.query; // {location, textinput, jobType}
+  if (location) {
+  }
+  JobPost.findAll({
+    where: textinput
+      ? {
+          [Op.or]: [
+            {
+              position: {
+                [Op.like]: `%${textinput}%`,
+              },
+            },
+            {
+              "$Employer.company_name$": {
+                [Op.like]: `%${textinput}%`,
+              },
+            },
+          ],
+        }
+      : {},
+    include: [
+      { model: Employer, as: "Employer" },
+      { model: JobType, where: jobtype ? { id: jobtype } : {} },
+      { model: Region, where: location ? { id: location } : {} },
+      { model: Hiringtype },
+    ],
+  })
+    .then((rs) => {
+      res.json(rs);
+    })
+    .catch((err) => next(err));
+};
 exports.getJob = (req, res, next) => {
+  const query = req.query;
   JobPost.findAll({
     include: [
       { model: Employer },
-      // { model: JobType },
-      // { model: Region },
-      // { model: Hiringtype },
+      { model: JobType },
+      { model: Region },
+      { model: Hiringtype },
     ],
   })
     .then((rs) => {
@@ -64,7 +99,7 @@ exports.getJob = (req, res, next) => {
 
 // exports.getJobById = (req, res, next) => {
 //   const { id } = req.param;
-//   jobPost.findOne({
+//   JobPost.findOne({
 //     attributes: [],
 //     where: { id: id },
 //   });

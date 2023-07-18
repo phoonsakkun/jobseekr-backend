@@ -22,5 +22,22 @@ const registerSchema = Joi.object({
     .strip(),
 });
 
+const adminRegisterSchema = Joi.object({
+  firstName: Joi.string().trim().required(),
+  lastName: Joi.string().trim().required(),
+  email: Joi.string().email({ tlds: false }),
+  companyName: Joi.string().trim().required(),
+  password: Joi.string()
+    .pattern(/^[a-zA-Z0-9]{6,30}$/)
+    .trim()
+    .required(),
+  confirmPassword: Joi.string()
+    .valid(Joi.ref("password"))
+    .trim()
+    .required()
+    .strip(),
+});
+
+exports.validateAdminRegister = validate(adminRegisterSchema);
 exports.validateLogin = validate(loginSchema);
 exports.validateRegister = validate(registerSchema);
